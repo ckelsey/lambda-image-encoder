@@ -6,7 +6,7 @@ LAMBDA SETUP
 -------------------------------
 - Required enviroment variables:
     * BUCKET_NAME: The bucket to put the images in
-- The function must be created with a role that has access to write to S3, sample policy below:
+- The function must be created with a role that has access to write to S3, sample policy below replacing <BUCKET-NAME>:
 - {"Version":"2012-10-17","Statement":[{"Effect":"Allow","Action":["s3:ListBucket"],"Resource":["arn:aws:s3:::<BUCKET-NAME>"]},{"Effect":"Allow","Action":["s3:PutObject","s3:GetObject"],"Resource":["arn:aws:s3:::<BUCKET-NAME>/*"]}]}
 - Memory should be set to the maximum(3000MB)
 - Timeout should be set to maximum (5min)
