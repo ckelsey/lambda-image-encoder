@@ -5,8 +5,6 @@ const path = require('path')
 const baseDir = path.resolve(__dirname, 'src')
 const toWatch = [`${baseDir}/*`]
 const pm2 = require('pm2')
-const gulpSequence = require('gulp-sequence')
-let pm2Process
 
 function moveFiles(){
     return new Promise((resolve)=>{
@@ -58,11 +56,6 @@ function moveFiles(){
     })
 }
 
-// MOVES FILES TO ENV FOLDERS
-gulp.task('moveFiles', function (done) {
-    moveFiles().then(done)
-})
-
 // Runs server
 gulp.task('devServer', function (done) {
     pm2.connect(true, function () {
@@ -103,12 +96,8 @@ gulp.task("build", function (done) {
     })
 })
 
-gulp.task("run", function(done){
-    gulpSequence("reload", "moveFiles")(done)
-})
-
-gulp.task("dev", ["devServer","run"], function () {
-    gulp.watch(toWatch, ["run"]);
+gulp.task("dev", ["devServer"], function () {
+    gulp.watch(toWatch, ["reload"]);
 })
 
 gulp.task("default", [

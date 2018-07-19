@@ -28,18 +28,24 @@ Run:
 - $ cd src && npm i && cd ../
 - $ gulp
 
-To build:
+To get the linux node_modules and build for Lambda from scratch:
 - $ docker login
 - $ cd env/linux
 - $ docker build -t amazon-linux .
-- $ docker run -v $(pwd):/lambda-image-encoder -it amazonlinux
-- $ curl --silent --location https://rpm.nodesource.com/setup_8.x | bash
-- $ yum -y install nodejs
-- $ yum install gcc-c++ make
-- $ yum install cairo cairo-devel cairomm-devel libjpeg-turbo-devel pango pango-devel pangomm pangomm-devel giflib-devel
-- $ cd lambda-image-encoder/src && npm i
-- $ exit
-- $ docker ps --all (find the id of the latest one)
-- $ sudo docker cp idofcontainer:/lambda-image-encoder/src/node_modules /src
-- $ cd ../../..
+- $ docker images -a (find the id of the latest one)
+- $ docker run -v $(pwd):/lambda-image-encoder -it id-of-image
+- EXAMPLE: docker run -v $(pwd):/lambda-image-encoder -it 1b91c3dff4c4
+- $ docker ps -a (find the id of the latest one)
+- $ sudo docker cp id-of-container:/lambda-image-encoder/src/node_modules src 
+- EXAMPLE: sudo docker cp 4a87ff062503:/lambda-image-encoder/src/node_modules src
+- $ cd ../..
 - $ gulp build
+
+To build for Lambda after initial build if nothing has changed with node_modules:
+- $ gulp build
+
+
+GULP TASKS
+-------------------------------
+gulp - Starts up a pm2 server. Also watches files and reloads
+gulp build - Moves files from ./src to ./env/linux/src, removes any unnecessary files, and zips up into a lambda package
