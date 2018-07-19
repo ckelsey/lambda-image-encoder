@@ -48,17 +48,11 @@ metadata.joinChunk = function (chunklist) {
     var pf = metadata.PNG_SIG;
     for (var i in chunklist) {
         var chunk = chunklist[i];
-        // check size
-        // chunk.size = chunk.data.length;
-        // calc crc
-        // var crc_v = crc32(chunk.type + chunk.data);
-        // 
         var buf = "";
         buf += itos(chunk.size, 4);
         buf += chunk.type;
         buf += chunk.data;
         buf += itos(chunk.crc, 4);
-        // console.log("w", chunk.size, chunk.type, ToUInt32(chunk.crc));
         pf += buf;
     }
     return pf;

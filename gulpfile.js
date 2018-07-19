@@ -8,53 +8,59 @@ const pm2 = require('pm2')
 const gulpSequence = require('gulp-sequence')
 let pm2Process
 
+function moveFiles(){
+    return new Promise((resolve)=>{
+        var total = 0
+        var completed = 0
+        var envPath = path.resolve(__dirname, 'env')
+
+        fs.readdir(envPath, function (err, dirs) {
+            var dirsList = []
+
+            for (var di = 0; di < dirs.length; di++) {
+                if (dirs[di] !== `.DS_Store`) {
+                    dirsList.push(dirs[di])
+                }
+            }
+
+            fs.readdir(baseDir, function (err, items) {
+
+                var itemsList = []
+
+                for (var ii = 0; ii < items.length; ii++) {
+                    if (items[ii] !== `.DS_Store`) {
+                        itemsList.push(items[ii])
+                    }
+                }
+
+                total = itemsList.length * dirsList.length
+
+                for (var d = 0; d < dirsList.length; d++) {
+                    for (var i = 0; i < itemsList.length; i++) {
+                        let srcPath = path.resolve(envPath, dirsList[d], 'src')
+                        if (!fs.existsSync(srcPath)) {
+                            fs.mkdirSync(srcPath)
+                        }
+
+                        exec(`cp ${path.resolve(baseDir, itemsList[i])} ${path.resolve(srcPath, itemsList[i])}`, function (err, stdout, stderr) {
+                            completed++
+
+                            if (completed === total) {
+                                resolve()
+                            }
+                        })
+                    }
+                }
+            })
+
+
+        })
+    })
+}
+
 // MOVES FILES TO ENV FOLDERS
 gulp.task('moveFiles', function (done) {
-    var total = 0
-    var completed = 0
-    var envPath = path.resolve(__dirname, 'env')
-
-    fs.readdir(envPath, function (err, dirs) {
-        var dirsList = []
-
-        for (var di = 0; di < dirs.length; di++) {
-            if (dirs[di] !== `.DS_Store`){
-                dirsList.push(dirs[di])
-            }
-        }
-
-        fs.readdir(baseDir, function (err, items) {
-
-            var itemsList = []
-
-            for (var ii = 0; ii < items.length; ii++) {
-                if (items[ii] !== `.DS_Store`) {
-                    itemsList.push(items[ii])
-                }
-            }
-
-            total = itemsList.length * dirsList.length
-
-            for (var d = 0; d < dirsList.length; d++) {
-                for (var i = 0; i < itemsList.length; i++) {
-                    let srcPath = path.resolve(envPath, dirsList[d], 'src')
-                    if (!fs.existsSync(srcPath)) {
-                        fs.mkdirSync(srcPath)
-                    }
-
-                    exec(`cp ${path.resolve(baseDir, itemsList[i])} ${path.resolve(srcPath, itemsList[i])}`, function (err, stdout, stderr) {
-                        completed++
-
-                        if (completed === total) {
-                            done()
-                        }
-                    })
-                }
-            }
-        })
-
-
-    })
+    moveFiles().then(done)
 })
 
 // Runs server
@@ -82,16 +88,23 @@ gulp.task('reload', function (done){
 
 // BUILDS FOR LAMBDA
 gulp.task("build", function (done) {
-    exec(`rm ${path.resolve(__dirname, 'env', 'linux', 'src', 'imageencode.zip')}`, function (err, stdout, stderr) {
-        exec(`cd ${path.resolve(__dirname, 'env', 'linux', 'src')} && zip -r imageencode.zip .`, function (err, stdout, stderr) {
-            console.log(err, stdout, stderr)
+    moveFiles().then(()=>{
+        exec(`cd ${path.resolve(__dirname, 'env', 'linux', 'src')} && find . -type f ! -name "*.*" -delete && rm imageencode.zip && zip -r imageencode.zip .`, function (err, stdout, stderr) {
+            if (err){
+                console.log(err)
+            }
+
+            if (stderr) {
+                console.log(stderr)
+            }
+
             done()
         })
     })
 })
 
 gulp.task("run", function(done){
-    gulpSequence("reload", "moveFiles", "build")(done)
+    gulpSequence("reload", "moveFiles")(done)
 })
 
 gulp.task("dev", ["devServer","run"], function () {

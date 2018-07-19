@@ -46,7 +46,6 @@ function draw360(sourceUrl, options) {
 		var img = new Image()
 		img.onload = function () {
 			var loadedImg = img
-			console.log(`loaded`)
 
 			if (img.width === img.height) {
 				var tempCanvas = new createCanvas(img.width, img.height / 2)
@@ -94,13 +93,11 @@ function draw360(sourceUrl, options) {
 				x, y, w, h,
 				0, 0, resizeCanvas.width, resizeCanvas.height)
 
-			console.log(`render`)
 			var buffers = []
 			var canvasStream = resizeCanvas.jpegStream({ quality: 100 })
 
 			canvasStream.on("data", function (chunk) { buffers.push(chunk) })
 			canvasStream.on("end", function () {
-				console.log(`end`)
 				resolve(Buffer.concat(buffers))
 			})
 		}

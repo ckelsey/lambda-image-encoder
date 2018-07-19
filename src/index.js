@@ -1,6 +1,7 @@
 const Sharp = require('sharp')
 const getBuffer = require('./getBuffer')
 const getMeta = require('./getMeta')
+const uploadToS3 = require('./uploadToS3')
 const validator = require('./validator')
 const variants = require('./variants')
 const path = require('path')
@@ -29,8 +30,6 @@ const defaultOptions = [
 
 exports.handler = (event, context, callback) => {
 
-    const bucket = process.env.BUCKET_NAME
-
     event.imageData = {}
     event.imageOptions = event.imageOptions || defaultOptions
 
@@ -49,7 +48,7 @@ exports.handler = (event, context, callback) => {
             "body": typeof body === `string` ? body : JSON.stringify(body)
         }
 
-        let error = status === 200 ? null : message
+        let error = status === 200 ? null : typeof body === `string` ? body : JSON.stringify(body)
         let resp = status !== 200 ? null : message
 
         return callback(error, resp)
@@ -61,9 +60,11 @@ exports.handler = (event, context, callback) => {
         Sharp(event.imageData.buffer)
             .metadata()
             .then(meta => {
-                getMeta(meta)
-                    .then(meta => {
-                        event.imageData.meta = meta
+                getMeta(meta, event.imageData.buffer)
+                    .then((res) => {
+                        console.log('meta', res)
+                        
+                        event.imageData.meta = res
 
                         if (!validator(event.imageData.meta.exif)) {
                             finish(400, {
@@ -76,13 +77,13 @@ exports.handler = (event, context, callback) => {
                         variants(event)
                             .then(results => {
                                 let urls = []
-
+                                
                                 if (process.env.LOCALDEV) {
                                     return callback(results)
                                 }
 
                                 results.imageOptions.forEach((option) => {
-                                    uploadToS3(option, bucket)
+                                    uploadToS3(option)
                                         .then(url => {
                                             urls.push(url)
 

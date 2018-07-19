@@ -1,9 +1,10 @@
 const AWS = require('aws-sdk')
 const ERROR = require('./error')
 
-function uploadToS3(option, bucket) {
+function uploadToS3(option) {
     return new Promise((resolve, reject) => {
         try {
+            const bucket = process.env.BUCKET_NAME
             let filepath = option.filepath
 
             if (!filepath) {

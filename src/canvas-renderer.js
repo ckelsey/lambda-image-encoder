@@ -35,8 +35,6 @@ THREE.SpriteCanvasMaterial.prototype.clone = function () {
 
 THREE.CanvasRenderer = function (parameters) {
 
-	console.log('THREE.CanvasRenderer', THREE.REVISION);
-
 	parameters = parameters || {};
 
 	var _this = this,
@@ -228,7 +226,6 @@ THREE.CanvasRenderer = function (parameters) {
 
 	this.setClearColorHex = function (hex, alpha) {
 
-		console.warn('THREE.CanvasRenderer: .setClearColorHex() is being removed. Use .setClearColor() instead.');
 		this.setClearColor(hex, alpha);
 
 	};
@@ -306,7 +303,6 @@ THREE.CanvasRenderer = function (parameters) {
 
 		if (camera.isCamera === undefined) {
 
-			console.error('THREE.CanvasRenderer.render: camera is not an instance of THREE.Camera.');
 			return;
 
 		}

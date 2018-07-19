@@ -2,7 +2,7 @@ const exif = require('./exif-parse')
 const png = require(`./png`)
 const ERROR = require('./error')
 
-function getMeta(meta) {
+function getMeta(meta, imageBuffer) {
     return new Promise((resolve, reject) => {
         try {
             meta.exif = meta.exif ? exif(meta.exif).image : {}
@@ -40,18 +40,20 @@ function getMeta(meta) {
             }
 
             if (meta.exif.MakerNote) {
-                if (meta.exif.MakerNote.split("360").length > 1) {
+
+                if (!meta.exif.MakerNote.split && meta.exif.MakerNote.toString){
+                    meta.exif.MakerNote = meta.exif.MakerNote.toString('utf8')
+                }
+
+                if (meta.exif.MakerNote.split && meta.exif.MakerNote.split("360").length > 1) {
                     meta["360"] = 1
                 }
 
-                if (
-                    meta.exif.MakerNote.split("Stereo").length > 1 ||
-                    meta.exif.Description === "Stereo"
-                ) {
+                if (meta.exif.MakerNote.split && (meta.exif.MakerNote.split("Stereo").length > 1 || meta.exif.Description === "Stereo")) {
                     meta["3D"] = 1
                 }
 
-                if (meta.exif.MakerNote.split("SuperResolution").length > 1) {
+                if (meta.exif.MakerNote.split && meta.exif.MakerNote.split("SuperResolution").length > 1) {
                     meta["Super resolution"] = 1
                 }
             }
