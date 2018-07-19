@@ -81,9 +81,9 @@ gulp.task('reload', function (done){
 
 // BUILDS FOR LAMBDA
 gulp.task("build", function (done) {
-    moveFiles().then(()=>{
-        exec(`cd ${path.resolve(__dirname, 'env', 'linux', 'src')} && find . -type f ! -name "*.*" -delete && rm imageencode.zip && zip -r imageencode.zip .`, function (err, stdout, stderr) {
-            if (err){
+    moveFiles().then(() => {
+        exec(`cd ${path.resolve(__dirname, 'env', 'linux', 'src')} && rm imageencode.zip`, function (err, stdout, stderr) {
+            if (err) {
                 console.log(err)
             }
 
@@ -91,7 +91,17 @@ gulp.task("build", function (done) {
                 console.log(stderr)
             }
 
-            done()
+            exec(`cd ${path.resolve(__dirname, 'env', 'linux', 'src')} && find . -type f ! -name "*.*" -delete && zip -r imageencode.zip .`, function (err, stdout, stderr) {
+                if (err) {
+                    console.log(err)
+                }
+
+                if (stderr) {
+                    console.log(stderr)
+                }
+
+                done()
+            })
         })
     })
 })
