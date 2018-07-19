@@ -20,6 +20,7 @@ LOCAL SETUP
 -------------------------------
 Prerequisites:
 - You'll need to have node and npm installed, preferably nvm: https://github.com/creationix/nvm
+- Install aws-sdk globally with npm i -g aws-sdk
 - To compile the AWS linux node modules, you'll need Docker
 
 Run:
