@@ -14,6 +14,34 @@ LAMBDA SETUP
 - Runtime should be set to Node.js 8.10
 
 
+ENCODING OPTIONS
+-------------------------------
+- name: image key, if no filepath is given, this will be used to name the file
+- prefix: prefix the filename with a string
+- filepath: the path to save the file on s3, minus bucket
+- format: what format to encode to, i.e. jpg, png, webp
+- quality: 1-100, for jpg or webp formats
+- compressionLevel: 0-9, for png format
+- chromaSubsampling: '4:4:4' or '4:2:0', for jpg format
+- progressive: true/false, for jpg or png formats
+- width: default null, Set a specific width in pixels
+- height: default null, Set a specific height in pixels
+- max: Set a maximum dimension for both width and height
+- scale: 0.0 to 1, amount to scale the image
+- normalize: true/false, run through the image processors (360 or 3D)
+- crop: Object of crop settings
+  - viewWidth: the width of the cropper viewport, specifically for 360 images
+  - viewHeight: the height of the cropper viewport, specifically for 360 images
+  - width: the width of the cropped area
+  - height: the height of the cropped area
+  - x: starting x point of crop
+  - y: starting y point of crop
+  - tilt: Y axis, specifically for 360 images
+  - pan: X axis, specifically for 360 images
+  - zoom: Z axis
+  - pixelRatio: the pixel ratio of the device that is requesting the crop. I.E. crop settings on a retina screen may differ from a normal screen
+
+
 LOCAL SETUP
 -------------------------------
 Prerequisites:

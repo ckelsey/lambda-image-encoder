@@ -1,6 +1,5 @@
 {
     "imageUrl": "http://localhost:8123/images/2-og.png",
-    "s3Path": 1,
     "imageOptions": [
         {
             "quality": 70,

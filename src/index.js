@@ -1,11 +1,13 @@
 const Sharp = require('sharp')
+const path = require('path')
+
 const getBuffer = require('./getBuffer')
 const getMeta = require('./getMeta')
 const uploadToS3 = require('./uploadToS3')
 const validator = require('./validator')
 const variants = require('./variants')
-const path = require('path')
 const ERROR = require('./error')
+
 const defaultOptions = [
     {
         "quality": 70,
