@@ -27,13 +27,13 @@ function uploadToS3(option) {
             s3.upload()
                 .send(function (error, data) {
                     if (error) {
-                        return reject(ERROR(err))
+                        return reject(ERROR(error))
                     }
 
                     return resolve(data.Location)
                 })
         } catch (error) {
-            return reject(ERROR(err))
+            return reject(ERROR(error))
         }
     })
 }

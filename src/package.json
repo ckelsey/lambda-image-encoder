@@ -1,5 +1,6 @@
 {
     "dependencies": {
+        "aws-sdk": "^2.291.0",
         "canvas": "^2.0.0-alpha.11",
         "sharp": "^0.20.1",
         "three": "^0.91.0"
