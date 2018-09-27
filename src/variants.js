@@ -34,8 +34,8 @@ OPTIONS
 module.exports = event => {
     return new Promise((resolve, reject) => {
         try {
-            let width = event.imageData.meta.Orientation === 6 || event.imageData.meta.Orientation === 8 ? event.imageData.meta.height : event.imageData.meta.width
-            let height = event.imageData.meta.Orientation === 6 || event.imageData.meta.Orientation === 8 ? event.imageData.meta.width : event.imageData.meta.height
+            let width = event.imageData.meta.Orientation === 6 || event.imageData.meta.orientation === 6 || event.imageData.meta.Orientation === 8 || event.imageData.meta.orientation === 8 ? event.imageData.meta.height : event.imageData.meta.width
+            let height = event.imageData.meta.Orientation === 6 || event.imageData.meta.orientation === 6 || event.imageData.meta.Orientation === 8 || event.imageData.meta.orientation === 8 ? event.imageData.meta.width : event.imageData.meta.height
             let completed = 0
 
             const finish = () => {
