@@ -101,7 +101,7 @@ module.exports = event => {
                     return imageFlat(event.imageData.buffer, params)
                         .then(src => {
                             if (params.type === `3d`) {
-                                option.width = Math.floor(option.width / 2)
+                                option.height = Math.floor(option.height * 2)
                             }
 
                             return process(option, src)

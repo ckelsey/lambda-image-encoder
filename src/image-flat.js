@@ -1,7 +1,5 @@
 const sanitizer = require("./sanitize")
-const fs = require("fs")
 const { createCanvas, Image } = require('canvas')
-const sharp = require(`sharp`)
 
 global.document = {
 	createElement: function (tag) {
@@ -33,7 +31,12 @@ function drawFabric(sourceUrl, options) {
 	return new Promise((resolve) => {
 
 		options = options || {}
-		options.viewWidth = options.viewWidth ? sanitizer.number(options.viewWidth) : options.viewwidth ? sanitizer.number(options.viewwidth) : options.type === "3d" ? options.imageWidth / 2 : options.imageWidth
+
+		if (options.type !== "3d"){
+			resolve(sourceUrl)
+		}
+
+		options.viewWidth = options.viewWidth ? sanitizer.number(options.viewWidth) : options.viewwidth ? sanitizer.number(options.viewwidth) : options.imageWidth
 		options.viewHeight = options.viewHeight ? sanitizer.number(options.viewHeight) : options.viewheight ? sanitizer.number(options.viewheight) : options.imageHeight
 
 		var orientation = options.orientation
@@ -53,22 +56,18 @@ function drawFabric(sourceUrl, options) {
 			var imgWidth = img.width
 			var imgHeight = img.height
 
-			if (options.type === "3d"){
-				imgWidth = imgWidth / 2
-			}
-
 			var canvas = new createCanvas(viewWidth, viewHeight)
 			canvas.style = {} // dummy shim to prevent errors during render.setSize
 
 			var ctx = canvas.getContext("2d")
-			ctx.drawImage(img, 0, 0, imgWidth, imgHeight, 0, 0, viewWidth, viewHeight)
+			ctx.drawImage(img, 0, 0, imgWidth, imgHeight, -(viewWidth / 4.015), 0, viewWidth, viewHeight)
 
-			var cropCanvas = new createCanvas(w, h)
-			cropCanvas.style = {} // dummy shim to prevent errors during render.setSize
-			cropCanvas.getContext("2d").drawImage(canvas, -x, -y)
+			// var cropCanvas = new createCanvas(w, h)
+			// cropCanvas.style = {} // dummy shim to prevent errors during render.setSize
+			// cropCanvas.getContext("2d").drawImage(canvas, -x, -y)
 
 			var buffers = []
-			var canvasStream = cropCanvas.jpegStream({ quality: 100 })
+			var canvasStream = canvas.jpegStream({ quality: 100 })
 
 			canvasStream.on("data", function (chunk) { buffers.push(chunk) })
 			canvasStream.on("end", function () {

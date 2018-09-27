@@ -66,17 +66,12 @@ function draw360(sourceUrl, options) {
 			var canvas = new createCanvas(options.viewWidth, options.viewHeight)
 			canvas.style = {} // dummy shim to prevent errors during render.setSize
 
-			var scaleWidth = 600
-			var scaleFactor =  (scaleWidth / w)
-
-			var resizeCanvas = new createCanvas(scaleWidth, h * scaleFactor)
-			resizeCanvas.style = {} // dummy shim to prevent errors during render.setSize
-
 			var renderer = new THREE.CanvasRenderer({
 				canvas: canvas,
-				antialiasing: false
+				antialiasing: true
 			})
 
+			renderer.setPixelRatio(2)
 			renderer.setSize(options.viewWidth, options.viewHeight)
 
 			lat = Math.max(- 85, Math.min(85, lat))
@@ -89,12 +84,8 @@ function draw360(sourceUrl, options) {
 
 			renderer.render(scene, camera)
 
-			resizeCanvas.getContext("2d").drawImage(canvas,
-				x, y, w, h,
-				0, 0, resizeCanvas.width, resizeCanvas.height)
-
 			var buffers = []
-			var canvasStream = resizeCanvas.jpegStream({ quality: 100 })
+			var canvasStream = canvas.jpegStream({ quality: 100 })
 
 			canvasStream.on("data", function (chunk) { buffers.push(chunk) })
 			canvasStream.on("end", function () {

@@ -1,5 +1,6 @@
 const AWS = require('aws-sdk')
 const ERROR = require('./error')
+const fs = require('fs')
 
 function uploadToS3(option) {
     return new Promise((resolve, reject) => {
@@ -10,6 +11,11 @@ function uploadToS3(option) {
             if (!filepath) {
                 let filename = `${option.prefix ? `${option.prefix}_` : ``}${option.name ? option.name : new Date().getTime()}`
                 filepath = `${filename}.${option.format === `jpeg` ? `jpg` : option.format}`
+            }
+
+            if(process.env.LOCALDEV){
+                fs.writeFileSync(filepath, option.buffer)
+                return resolve(filepath)
             }
 
             let s3 = new AWS.S3({
@@ -32,6 +38,7 @@ function uploadToS3(option) {
 
                     return resolve(data.Location)
                 })
+            
         } catch (error) {
             return reject(ERROR(error))
         }

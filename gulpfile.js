@@ -56,6 +56,12 @@ function moveFiles(){
     })
 }
 
+gulp.task('move', function (done){
+    moveFiles().then(() => {
+        done()
+    })
+})
+
 // Runs server
 gulp.task('devServer', function (done) {
     pm2.connect(true, function () {
