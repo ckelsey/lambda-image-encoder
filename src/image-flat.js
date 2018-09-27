@@ -60,7 +60,7 @@ function drawFabric(sourceUrl, options) {
 			canvas.style = {} // dummy shim to prevent errors during render.setSize
 
 			var ctx = canvas.getContext("2d")
-			ctx.drawImage(img, 0, 0, imgWidth, imgHeight, -(viewWidth / 4.015), 0, viewWidth, viewHeight)
+			ctx.drawImage(img, 0, 0, imgWidth, imgHeight, -(viewWidth / 4), 0, viewWidth, viewHeight)
 
 			// var cropCanvas = new createCanvas(w, h)
 			// cropCanvas.style = {} // dummy shim to prevent errors during render.setSize
