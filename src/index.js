@@ -39,6 +39,9 @@ exports.handler = (event, context, callback) => {
         event.imageOptions = JSON.parse(event.imageOptions)
     } catch (error) { }
 
+    console.log("IMAGE URL", event.imageUrl)
+    console.log("IMAGE OPTIONS", event.imageOptions)
+
     function finish(status, body) {
         let message = {
             "isBase64Encoded": false,
@@ -64,7 +67,7 @@ exports.handler = (event, context, callback) => {
             .then(meta => {
                 getMeta(meta, event.imageData.buffer)
                     .then((res) => {
-                        console.log('meta', res)
+                        console.log('IMAGE METADATA', res)
                         
                         event.imageData.meta = res
 

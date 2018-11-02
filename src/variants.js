@@ -117,6 +117,75 @@ module.exports = event => {
             }
 
             event.imageOptions.forEach(option => {
+                if(option.width){
+                    option.width = parseInt(option.width)
+
+                    if(!option.width){
+                        delete option.width
+                    }
+                }else{
+                    delete option.width
+                }
+
+                if(option.height){
+                    option.height = parseInt(option.height)
+
+                    if(!option.height){
+                        delete option.height
+                    }
+                }else{
+                    delete option.height
+                }
+
+                if(option.max){
+                    option.max = parseInt(option.max)
+
+                    if(!option.max){
+                        delete option.max
+                    }
+                }else{
+                    delete option.max
+                }
+
+                if(option.scale){
+                    option.scale = parseFloat(option.scale)
+
+                    if(!option.scale){
+                        delete option.scale
+                    }
+                }else{
+                    delete option.scale
+                }
+
+                if (option.quality) {
+                    option.quality = parseInt(option.quality)
+
+                    if(!option.quality){
+                        delete option.quality
+                    }
+                }else{
+                    delete option.quality
+                }
+
+                if(event.imageData.meta[`360`]){
+                    if(option.max){
+                        option.max = Math.min(option.max, 4096)
+                    }else{
+                        option.max = 4096
+                    }
+
+                    if(option.width){
+                        option.width = Math.min(option.max, option.width)
+                    }else{
+                        option.width = option.max
+                    }
+                    
+                    option.height = option.width / 2
+
+                    if (event.imageData.meta[`3D`]) {
+                        option.height = option.width
+                    } 
+                }
 
                 if (option.width && !option.height) {
                     option.height = height * (option.width / width)
@@ -135,8 +204,8 @@ module.exports = event => {
                 }
 
                 if (option.scale) {
-                    option.width = parseFloat(option.scale) * option.width
-                    option.height = parseFloat(option.scale) * option.height
+                    option.width = option.scale * option.width
+                    option.height = option.scale * option.height
                 }
 
                 if (option.max) {
@@ -161,10 +230,10 @@ module.exports = event => {
                 option.parameters = {}
 
                 if (option.quality) {
-                    option.parameters.quality = parseInt(option.quality)
+                    option.parameters.quality = option.quality
                 }
 
-                if (option.hasOwnProperty(`compressionLevel`)) {
+                if (option.hasOwnProperty(`compressionLevel`) && option.format === 'png') {
                     option.parameters.compressionLevel = parseInt(option.compressionLevel)
                 }
 
@@ -172,9 +241,11 @@ module.exports = event => {
                     option.parameters.chromaSubsampling = option.chromaSubsampling
                 }
 
-                if (option.progressive) {
+                if (option.progressive && option.progressive !== 'false') {
                     option.parameters.progressive = option.progressive
                 }
+
+                console.log('PARSED OPTION', option)
 
                 if (option.normalize || option.crop) {
                     normalize(option)
